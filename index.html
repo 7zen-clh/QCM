@@ -6,7 +6,8 @@
     <title>QCM en ligne</title>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            fetch('\questions.xml') // Charge le fichier XML
+            fetch('fetch('https://strong-shortbread-9f6d47.netlify.app/question.xml')
+') // Charge le fichier XML
                 .then(response => response.text())
                 .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
                 .then(xml => {
