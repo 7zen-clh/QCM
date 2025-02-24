@@ -15,52 +15,52 @@
         document.addEventListener("DOMContentLoaded", function () {
             // Charge le fichier XML
             fetch('https://strong-shortbread-9f6d47.netlify.app/question.xml')
-                .then(response => response.text()) // Convertit la réponse en texte
-                .then(str => new window.DOMParser().parseFromString(str, "text/xml")) // Parse le XML
+                .then(response => response.text()) 
+                .then(str => new window.DOMParser().parseFromString(str, "text/xml")) 
                 .then(xml => {
                     let questions = xml.getElementsByTagName("question"); // Récupère les questions
                     let quizContainer = document.getElementById("quiz"); // Conteneur pour les questions
                     
                     for (let i = 0; i < questions.length; i++) {
-                        let qText = questions[i].getElementsByTagName("questiontext")[0].textContent; // Texte de la question
-                        let answers = questions[i].getElementsByTagName("answer"); // Récupère les réponses
+                        let qText = questions[i].getElementsByTagName("questiontext")[0].textContent; 
+                        let answers = questions[i].getElementsByTagName("answer"); 
                         
                         let questionDiv = document.createElement("div");
-                        questionDiv.innerHTML = `<p><strong>${qText}</strong></p>`; // Affiche la question
+                        questionDiv.innerHTML = `<p><strong>${qText}</strong></p>`; 
                         
                         for (let j = 0; j < answers.length; j++) {
-                            let answerText = answers[j].textContent; // Texte de la réponse
+                            let answerText = answers[j].textContent; 
                             let input = document.createElement("input");
-                            input.type = "radio"; // Type radio pour les réponses
-                            input.name = "question" + i; // Groupement des réponses par question
-                            input.value = answers[j].getAttribute("fraction"); // Valeur de la fraction (score)
+                            input.type = "radio"; 
+                            input.name = "question" + i; 
+                            input.value = answers[j].getAttribute("fraction"); 
                             
                             let label = document.createElement("label");
                             label.appendChild(input);
-                            label.appendChild(document.createTextNode(answerText)); // Affiche le texte de la réponse
+                            label.appendChild(document.createTextNode(answerText));
                             
                             questionDiv.appendChild(label);
                             questionDiv.appendChild(document.createElement("br"));
                         }
-                        quizContainer.appendChild(questionDiv); // Ajoute la question au conteneur
+                        quizContainer.appendChild(questionDiv); 
                     }
                 })
-                .catch(err => console.log("Erreur de chargement du fichier XML :", err)); // Gère les erreurs de chargement
+                .catch(err => console.log("Erreur de chargement du fichier XML :", err)); 
         });
 
         // Fonction pour valider le QCM et calculer le score
         function submitQuiz() {
-            let inputs = document.querySelectorAll("input[type='radio']:checked"); // Récupère toutes les réponses sélectionnées
+            let inputs = document.querySelectorAll("input[type='radio']:checked"); 
             let score = 0;
             
             // Parcours les réponses sélectionnées et calcule le score
             inputs.forEach(input => {
                 if (parseFloat(input.value) > 0) {
-                    score++; // Incrémente le score pour chaque réponse correcte
+                    score++; 
                 }
             });
             
-            // Affiche le score à l'utilisateur
+        
             alert("Votre score est : " + score + " / " + document.querySelectorAll("div").length);
         }
     </script>
