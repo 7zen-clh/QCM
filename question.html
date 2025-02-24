@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM en ligne</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('questions.xml') // Charge le fichier XML
+                .then(response => response.text())
+                .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+                .then(xml => {
+                    let questions = xml.getElementsByTagName("question");
+                    let quizContainer = document.getElementById("quiz");
+                    
+                    for (let i = 0; i < questions.length; i++) {
+                        let qText = questions[i].getElementsByTagName("questiontext")[0].textContent;
+                        let answers = questions[i].getElementsByTagName("answer");
+                        
+                        let questionDiv = document.createElement("div");
+                        questionDiv.innerHTML = `<p><strong>${qText}</strong></p>`;
+                        
+                        for (let j = 0; j < answers.length; j++) {
+                            let answerText = answers[j].textContent;
+                            let input = document.createElement("input");
+                            input.type = "radio";
+                            input.name = "question" + i;
+                            input.value = answers[j].getAttribute("fraction");
+                            
+                            let label = document.createElement("label");
+                            label.appendChild(input);
+                            label.appendChild(document.createTextNode(answerText));
+                            
+                            questionDiv.appendChild(label);
+                            questionDiv.appendChild(document.createElement("br"));
+                        }
+                        quizContainer.appendChild(questionDiv);
+                    }
+                });
+        });
+        
+        function submitQuiz() {
+            let inputs = document.querySelectorAll("input[type='radio']:checked");
+            let score = 0;
+            inputs.forEach(input => {
+                if (parseFloat(input.value) > 0) {
+                    score++;
+                }
+            });
+            alert("Votre score est : " + score + " / " + document.querySelectorAll("div").length);
+        }
+    </script>
+</head>
+<body>
+    <h1>QCM en ligne</h1>
+    <div id="quiz"></div>
+    <button onclick="submitQuiz()">Valider</button>
+</body>
+</html>
