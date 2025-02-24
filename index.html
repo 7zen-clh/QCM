@@ -6,7 +6,7 @@
     <title>QCM en ligne</title>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            fetch('questions.xml') // Charge le fichier XML
+            fetch('\questions.xml') // Charge le fichier XML
                 .then(response => response.text())
                 .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
                 .then(xml => {
