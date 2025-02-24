@@ -4,57 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QCM en ligne</title>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch('fetch('https://strong-shortbread-9f6d47.netlify.app/question.xml')
-') // Charge le fichier XML
-                .then(response => response.text())
-                .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
-                .then(xml => {
-                    let questions = xml.getElementsByTagName("question");
-                    let quizContainer = document.getElementById("quiz");
-                    
-                    for (let i = 0; i < questions.length; i++) {
-                        let qText = questions[i].getElementsByTagName("questiontext")[0].textContent;
-                        let answers = questions[i].getElementsByTagName("answer");
-                        
-                        let questionDiv = document.createElement("div");
-                        questionDiv.innerHTML = `<p><strong>${qText}</strong></p>`;
-                        
-                        for (let j = 0; j < answers.length; j++) {
-                            let answerText = answers[j].textContent;
-                            let input = document.createElement("input");
-                            input.type = "radio";
-                            input.name = "question" + i;
-                            input.value = answers[j].getAttribute("fraction");
-                            
-                            let label = document.createElement("label");
-                            label.appendChild(input);
-                            label.appendChild(document.createTextNode(answerText));
-                            
-                            questionDiv.appendChild(label);
-                            questionDiv.appendChild(document.createElement("br"));
-                        }
-                        quizContainer.appendChild(questionDiv);
-                    }
-                });
-        });
-        
-        function submitQuiz() {
-            let inputs = document.querySelectorAll("input[type='radio']:checked");
-            let score = 0;
-            inputs.forEach(input => {
-                if (parseFloat(input.value) > 0) {
-                    score++;
-                }
-            });
-            alert("Votre score est : " + score + " / " + document.querySelectorAll("div").length);
-        }
-    </script>
 </head>
 <body>
     <h1>QCM en ligne</h1>
     <div id="quiz"></div>
     <button onclick="submitQuiz()">Valider</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Charge le fichier XML
+            fetch('https://strong-shortbread-9f6d47.netlify.app/question.xml')
+                .then(response => response.text()) // Convertit la réponse en texte
+                .then(str => new window.DOMParser().parseFromString(str, "text/xml")) // Parse le XML
+                .then(xml => {
+                    let questions = xml.getElementsByTagName("question"); // Récupère les questions
+                    let quizContainer = document.getElementById("quiz"); // Conteneur pour les questions
+                    
+                    for (let i = 0; i < questions.length; i++) {
+                        let qText = questions[i].getElementsByTagName("questiontext")[0].textContent; // Texte de la question
+                        let answers = questions[i].getElementsByTagName("answer"); // Récupère les réponses
+                        
+                        let questionDiv = document.createElement("div");
+                        questionDiv.innerHTML = `<p><strong>${qText}</strong></p>`; // Affiche la question
+                        
+                        for (let j = 0; j < answers.length; j++) {
+                            let answerText = answers[j].textContent; // Texte de la réponse
+                            let input = document.createElement("input");
+                            input.type = "radio"; // Type radio pour les réponses
+                            input.name = "question" + i; // Groupement des réponses par question
+                            input.value = answers[j].getAttribute("fraction"); // Valeur de la fraction (score)
+                            
+                            let label = document.createElement("label");
+                            label.appendChild(input);
+                            label.appendChild(document.createTextNode(answerText)); // Affiche le texte de la réponse
+                            
+                            questionDiv.appendChild(label);
+                            questionDiv.appendChild(document.createElement("br"));
+                        }
+                        quizContainer.appendChild(questionDiv); // Ajoute la question au conteneur
+                    }
+                })
+                .catch(err => console.log("Erreur de chargement du fichier XML :", err)); // Gère les erreurs de chargement
+        });
+
+        // Fonction pour valider le QCM et calculer le score
+        function submitQuiz() {
+            let inputs = document.querySelectorAll("input[type='radio']:checked"); // Récupère toutes les réponses sélectionnées
+            let score = 0;
+            
+            // Parcours les réponses sélectionnées et calcule le score
+            inputs.forEach(input => {
+                if (parseFloat(input.value) > 0) {
+                    score++; // Incrémente le score pour chaque réponse correcte
+                }
+            });
+            
+            // Affiche le score à l'utilisateur
+            alert("Votre score est : " + score + " / " + document.querySelectorAll("div").length);
+        }
+    </script>
 </body>
 </html>
